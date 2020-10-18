@@ -1,6 +1,27 @@
 require 'rails_helper'
 
 describe MoviesController, type: 'controller' do
+    context '#create' do
+        describe 'add movie to database' do
+            it 'creates a movie and redirects to movies path' do
+                movie_attributes = FactoryBot.attributes_for(:movie)
+                expect{post :create, movie: movie_attributes}.to change{Movie.count}.by(1)
+                expect(response).to redirect_to movies_path
+            end
+        end
+    end
+    
+    context '#delete' do
+        describe 'delete movie from database' do
+            it 'deletes a movie and redirects to movies path' do
+                movie = FactoryBot.create(:movie)
+                allow(Movie).to receive(:find).and_return movie
+                expect{delete :destroy, id: movie.id}.to change{Movie.count}.by(-1)
+                expect(response).to redirect_to movies_path
+            end
+        end
+    end
+    
     context '#search_directors' do
         describe 'movie has a director' do
             it 'responds to the search_directors route' do
